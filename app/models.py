@@ -15,19 +15,12 @@ class Product(models.Model):
     image = models.ImageField(upload_to='product_images', null= True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     after_discount=models.DecimalField(max_digits=10, decimal_places=2, null=True)
-    short_dec = models.CharField(max_length=200)
     long_dec = models.TextField()
     weight = models.CharField(max_length=100)
-    additional_information = models.TextField()
     product_availability = models.BooleanField(default=True)
     
     def __str__(self):
         return self.name
-
-
-class ProductImage(models.Model):
-    name = models.ForeignKey(Product, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='product_images')
 
 STATE_CHOICES = (
     ('Andhra Pradesh', 'Andhra Pradesh'),

@@ -7,7 +7,7 @@ from django.contrib.auth import views as auth_view
 from . forms import *
 from django.contrib.auth import views as auth_views
 from app.forms import MyPasswordResetForm, MySetPasswordForm
-
+from django.contrib import admin
 
 urlpatterns = [
     path('', views.home, name='index'),
@@ -52,4 +52,7 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     
-    
+
+admin.site.site_header= "Farming"
+admin.site.site_title= "Farming"
+admin.site.site_index_title= "Welcome to Farming Admin Site"

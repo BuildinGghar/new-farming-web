@@ -5,6 +5,12 @@ from django.contrib import messages
 from .forms import *
 from django.http import JsonResponse
 from django.db.models import Q
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+
+
+
 # Create your views here.
 
 
@@ -43,7 +49,7 @@ def product(request, city_name=None):
     }
     return render(request, 'app/product.html', context)
 
-
+@login_required
 def product_details(request,id, city_name=None):
     totalitem=0
     if request.user.is_authenticated:
@@ -396,12 +402,8 @@ class checkout(View):
         return render(request, 'app/checkout.html', locals())
 
 
-from django.shortcuts import redirect
 
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect
 
-@login_required
 def payment_done(request):
     order_id = request.GET.get('order_id')
     payment_id = request.GET.get('payment_id')
