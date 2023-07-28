@@ -4,60 +4,103 @@
 {% block title %}About{% endblock title %}
 
 
-{% block bannner_slider %}
 
-<div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <img src="{% static 'app/images/banner/b1.png' %}" class="d-block w-100" alt="...">
-      </div>
-      <div class="carousel-item ">
-        <img src="{% static 'app/images/banner/b2.png' %}" class="d-block w-100" alt="...">
-      </div>
-      <div class="carousel-item ">
-        <img src="{% static 'app/images/banner/b3.png' %}" class="d-block w-100" alt="...">
-      </div>
-      <div class="carousel-item ">
-        <img src="{% static 'app/images/banner/b4.png' %}" class="d-block w-100" alt="...">
-      </div>
-    </div>
-  </div>
-
-{% endblock bannner_slider %}
 
 
 {% block main-content %}
 
-<div class="container mt-3">
-    <br>
-    <h2 class="text-center">About Us</h2>
-    <br>
-    <div class="row container">
-        <p class="fs-4 text-center">
-            Welcome to our organic farm company! We are dedicated to providing you with the highest quality organic products while prioritizing sustainability and environmental stewardship. Our mission is to promote healthy living and contribute to a more sustainable future by cultivating and delivering organic produce to our valued customers.
-        </p>
-        <p class="fs-4 text-center">
-            At our farm, we believe in the power of nature and the importance of organic farming practices. We have a deep respect for the environment and strive to minimize our ecological footprint. Our farm is located in a pristine countryside, where we have carefully chosen the ideal location to grow our crops using organic methods.
-        </p>
-        <p class="fs-4 text-center">
-            Organic farming is at the core of everything we do. We prioritize the use of natural fertilizers, compost, and organic pest control methods to maintain the health and vitality of our soil and crops. By avoiding the use of synthetic pesticides, herbicides, and genetically modified organisms (GMOs), we ensure that our products are free from harmful chemicals and retain their natural goodness.
-        </p>
-        <p class="fs-4 text-center">
-            Our commitment to organic farming extends to our livestock as well. We raise our animals using ethical and humane practices, allowing them to roam freely in open pastures and providing them with organic feed. This ensures that the meat, eggs, and dairy products we offer are not only delicious but also produced with the utmost care and respect for the animals and the environment.
-        </p>
-        <p class="fs-4 text-center">
-            We take pride in the diversity of our crops and the seasonal variety we offer. From vibrant fruits and vegetables to aromatic herbs and grains, we carefully select and grow a wide range of organic produce to cater to the preferences and nutritional needs of our customers. We believe that the freshest and most flavorful products come directly from the farm to your table.
-        </p>
-        <p class="fs-4 text-center">
-            To ensure that our products reach you at the peak of freshness, we have established efficient distribution channels and work closely with local vendors. This allows us to deliver our organic goods to various markets, restaurants, and individual consumers who share our passion for healthy and sustainable living.
-        </p>
-        <p class="fs-4 text-center">
-            In addition to providing exceptional organic products, we are also dedicated to educating and engaging our community. We host farm tours, workshops, and events to promote awareness about organic farming, sustainable practices, and the benefits of consuming organic produce. We believe that by fostering a connection between people and the land, we can inspire positive change and create a healthier world for future generations.
-        </p>
-        <p class="fs-4 text-center">
-            Thank you for choosing our organic farm company. We are excited to be part of your journey towards a healthier and more sustainable lifestyle. Together, let's embrace the goodness of nature and support the organic movement.
-        </p>
-    </div>
+
+
+{% comment %} test {% endcomment %}
+<style>
+  /* general styles */
+  /*padded section */
+  .pad-section {
+  padding: 50px 0;
+  }
+  .pad-section img {
+  width: 100%;
+  }
+  /* vertical-centered text */
+  .text-vcenter {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  }
+  .text-vcenter h1 {
+  font-family: Quicksand, serif;
+  font-size: 5.5em;
+  font-weight: 400;
+  margin: 0;
+  padding: 0;
+  }
+  /* seconde section - About */
+  #about .container {
+  margin-top: 50px;
+  }
+  #about .col-sm-6 img {
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 10px;
+  }
+  #about h2 {
+  font-family: Quicksand, serif;
+  font-weight: 500;
+  margin-top: 30px;
+  }
+  #about p.lead {
+  font-size: 1.2rem;
+  margin-top: 20px;
+  }
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- seconde section - About -->
+<div id="about" class="pad-section">
+  <div class="container">
+     <div class="row">
+        <div class="col-sm-6">
+           <img src="{% static 'app/images/ab1.png' %}" alt="" />
+        </div>
+        <div class="col-sm-6 text-center">
+           <h2>Organic farming</h2>
+           <p class="lead">Organic farming can be defined as an agricultural process that uses biological fertilisers and pest control acquired from animal or plant waste. Organic farming was actually initiated as an answer to the environmental sufferings caused by the use of chemical pesticides and synthetic fertilisers.
+
+              The organic farming process is more eco-friendly than conventional farming. Organic farming keeps soil healthy and maintains environment integrity thereby, promoting the health of consumers.</p>
+        </div>
+     </div>
+  </div>
+</div>
+<!-- /second section -->
+<div id="about" class="pad-section">
+  <div class="container">
+     <div class="row">
+        <div class="col-sm-6 ">
+           <h2>Organic foods</h2>
+           <p class="lead">The term “organic” refers to how certain foods are produced. Organic foods have been grown or farmed without the use of: In order to be labelled organic, a food product must be free of artificial food additives. This includes artificial sweeteners, preservatives, colouring, flavouring, and monosodium glutamate (MSG)
+
+              Our Mission To be a trustworthy and innovative global leader in providing genuine organic True Wellness products and solutions for conscious, healthy living
+              
+              Organic products are grown under a system of agriculture without the use of chemical fertilizers and pesticides with an environmentally and socially responsible approach.
+              
+              Organic Products India is an organization that specialises in manufacturing and exporting a variety of organic food products like oil seeds, spices, grains and pulses.</p>
+        </div>
+        <div class="col-sm-6">
+           <img src="{% static 'app/images/ab2.png' %}" alt="" />
+        </div>
+     </div>
+  </div>
+</div>
 </div>
 
 

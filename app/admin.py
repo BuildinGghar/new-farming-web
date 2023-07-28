@@ -76,3 +76,28 @@ class WishlistAdmin(admin.ModelAdmin):
     
     
 admin.site.unregister(Group)
+
+
+# admin.py
+
+
+
+from django.contrib import admin
+from .models import OrderPlacedCOD
+
+@admin.register(OrderPlacedCOD)
+class OrderPlacedCODAdmin(admin.ModelAdmin):
+    list_display = ('user','order', 'product', 'quantity', 'customer', 'order_date', 'status', 'total_amount')
+    list_filter = ('status',)
+    search_fields = ('order__user__username', 'customer__name', 'product__name', 'order_date', 'status', 'total_amount')
+    ordering = ('-order_date',)
+
+# You can register other models here if needed
+
+
+class ContactMessageAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'phone_number', 'message')
+    search_fields = ('name', 'email', 'phone_number')
+    list_per_page = 25
+
+admin.site.register(ContactMessage, ContactMessageAdmin)

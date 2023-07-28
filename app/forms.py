@@ -56,3 +56,19 @@ class CustomerProfileForm(forms.ModelForm):
             'zipcode':forms.TextInput(attrs={'class':'form-control'}),
             
         }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+from django import forms
+
+class ContactForm(forms.Form):
+    name = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'class': 'styled-input wide'}))
+    email = forms.EmailField(required=True, widget=forms.TextInput(attrs={'class': 'styled-input'}))
+    phone_number = forms.CharField(max_length=15, required=True, widget=forms.TextInput(attrs={'class': 'styled-input', 'style': 'float:right;'}))
+    message = forms.CharField(required=True, widget=forms.Textarea(attrs={'class': 'styled-input wide'}))

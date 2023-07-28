@@ -8,7 +8,7 @@ from . forms import *
 from django.contrib.auth import views as auth_views
 from app.forms import MyPasswordResetForm, MySetPasswordForm
 from django.contrib import admin
-
+from .views import *
 urlpatterns = [
     path('', views.home, name='index'),
     path('city_product/<str:city_name>/', views.product, name='product'),
@@ -28,6 +28,10 @@ urlpatterns = [
     path('checkout/', views.checkout.as_view(), name='checkout'),
     path('paymentdone/', views.payment_done, name='paymentdone'),
     path('orders/', views.orders, name='orders'),
+    path('orderscod/', views.orderscod, name='orderscod'),
+    
+    path('cod_checkout/', CODCheckout.as_view(), name='cod_checkout'),
+    
     
     path('search/', views.search_results, name='search_results'),
     

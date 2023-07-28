@@ -22,29 +22,108 @@
 
                 <br><br>
                 <h4>Product Features</h4>
-                <ul class="fs-5" style="font-family: Rajdhani;">
+                <ul >
                     <li>{{product.long_dec}}</li>
                 </ul>
                 
-                <div class="d-inline-flex font-family: Rajdhani">
-                    <form action="/add-to-cart">
-                        <input type="hidden" name="prod_id" value="{{product.id}}" />
-                        <button type="submit" class="btn btn-primary shadow px-5 py-2">Add to Cart</button>
-                    </form>
-                    <a href="/showcart" class="btn btn-warning shadow px-5 py-2 ms-4">Buy Now</a>
-                    {% if wishlist %}
-                        <a pid="{{ product.id }}" class="minus-wishlist btn btn-danger shadow px-5 py-2 ms-4"><i class="fas fa-heart fa-lg"></i></a>
-                    {% else %}
-                        <a pid="{{ product.id }}" class="plus-wishlist btn btn-success shadow px-5 py-2 ms-4"><i class="fas fa-heart fa-lg"></i></a>
-                    {% endif %}
-
+                <div class="row justify-content-center">
+                    <div class="col-sm-6 col-md-4">
+                        {% if is_product_in_cart %}
+                            <!-- Show the "Show Cart" button -->
+                            <a href="/view-cart" class="btn btn-success shadow px-4 py-2">Show Cart</a>
+                        {% else %}
+                            <!-- Show the "Add to Cart" form -->
+                            <form action="/add-to-cart" class="d-flex justify-content-center justify-content-sm-start mb-2">
+                                <input type="hidden" name="prod_id" value="{{ product.id }}" />
+                                <button type="submit" class="btn btn-primary shadow px-4 py-2">Add to Cart</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-sm-6 col-md-4">
+                        <form action="/add-to-cart" class="d-flex justify-content-center justify-content-sm-start mb-2">
+                            <input type="hidden" name="prod_id" value="{{product.id}}" />
+                            <button type="submit" class="btn btn-warning shadow px-4 py-2">Buy Now</button>
+                        </form>
+                    </div>
+                    <div class="col-12 mt-2 text-center">
+                        {% comment %} <a href="/showcart" class="btn btn-warning shadow px-5 py-2">Buy Now</a> {% endcomment %}
+                        {% if wishlist %}
+                            <a pid="{{ product.id }}" class="minus-wishlist btn btn-danger shadow px-4 py-2"><i class="fas fa-heart fa-lg"></i></a>
+                        {% else %}
+                            <a pid="{{ product.id }}" class="plus-wishlist btn btn-success shadow px-4 py-2"><i class="fas fa-heart fa-lg"></i></a>
+                        {% endif %}
+                    </div>
                 </div>
+                
                 
                     {% comment %} <div class="btn btn-dark p-1 m-1 btn-lg"> <a href="#" class="text-decoration-none text-white">Buy Now</a> </div> {% endcomment %}
                 
             </div>
         </div>
     </div>
+
+
+
+
+
+
+
+
+<!-- Add the necessary link and script tags -->
+
+
+<div id="carouselExampleControls" class="carousel carousel-dark slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        <div style="text-align: center;">
+            <h3>Related Product......</h3>
+        </div>
+      {% for product in products %}
+      
+        {% if forloop.counter0|divisibleby:4 %}
+          <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            <div class="card-wrapper container-sm d-flex justify-content-around">
+        {% endif %}
+        <a href="{% url 'product-detail' id=product.id %}" class="btn">
+          <div class="card" style="width: 18rem;">
+            <img src="{{ product.image.url }}" class="card-img-top" alt="...">
+            <div class="card-body">
+              <h5 class="card-title">{{ product.name }}</h5>
+              <!-- Add other product information here if needed -->
+              <h5 style="color: green;">Rs.{{ product.after_discount }}/-</h5>
+              <small class="text-decoration-line-through text-muted fs-5"><del>Rs.{{ product.price }}/-</del></small>
+            </div>
+          </div>
+        </a>
+        {% if forloop.counter0|add:1|divisibleby:4 or forloop.last %}
+            </div>
+          </div>
+        {% endif %}
+       
+      {% endfor %}
+    </div>
+  
+    <!-- Add carousel controls -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+  
+
+
+
+
+
+
+
+
+    
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 

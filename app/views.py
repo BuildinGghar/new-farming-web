@@ -61,13 +61,15 @@ def product_details(request,id, city_name=None):
     related_product = Product.objects.filter(city__city=city_name) if city_name else Product.objects.all()
     product=get_object_or_404(Product, id=id)
     wishlist=Wishlist.objects.filter(Q(product=product) & Q(user=request.user))
+    products = Product.objects.filter(city__city=city_name) if city_name else Product.objects.all()
     context={
         'city':cities,
         'product':product,
         'related_product':related_product,
         'totalitem':totalitem,
         'wishlist':wishlist,
-        'wishitem':wishitem
+        'wishitem':wishitem,
+        'products':products
     }
     return render(request, 'app/product_details.html', context)
 
@@ -87,20 +89,44 @@ def about(request):
     return render(request, 'app/about.html', context)
 
 def contact(request):
-    totalitem=0
+    totalitem = 0
     if request.user.is_authenticated:
-        totalitem=len(Cart.objects.filter(user=request.user))
-    wishitem=0
+        totalitem = len(Cart.objects.filter(user=request.user))
+    
+    wishitem = 0
     if request.user.is_authenticated:
-        wishitem=len(Wishlist.objects.filter(user=request.user))
+        wishitem = len(Wishlist.objects.filter(user=request.user))
+    
     cities = CityRegister.objects.all()
+    
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            # Process the form data
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            phone_number = form.cleaned_data['phone_number']
+            message = form.cleaned_data['message']
+            
+            # Save the data to the database using the ContactMessage model
+            contact_message = ContactMessage(name=name, email=email, phone_number=phone_number, message=message)
+            contact_message.save()
+
+            # Add a success message
+            messages.success(request, 'Your message was successfully sent We will contact you soon.')
+
+            # Redirect to the same page after successful form submission
+            return redirect('/')
+    else:
+        form = ContactForm()
+
     context = {
         'city': cities,
-        'totalitem':totalitem,
-        'wishitem':wishitem
+        'totalitem': totalitem,
+        'wishitem': wishitem,
+        'form': form,
     }
     return render(request, 'app/contact.html', context)
-
 
 
 class CustomerRegistrationView(View):
@@ -402,6 +428,78 @@ class checkout(View):
         return render(request, 'app/checkout.html', locals())
 
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views import View
+from django.contrib import messages
+from django.utils import timezone
+from .models import OrderPlacedCOD, Cart, Customer, OrderPlaced
+
+from django.views import View
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.utils import timezone
+from app.models import Cart, OrderPlaced, Customer, OrderPlacedCOD
+
+class CODCheckout(View):
+    def get(self, request):
+        user = request.user
+        cart = Cart.objects.filter(user=user)
+        totalamount = 0
+        for p in cart:
+            totalamount += p.total_cost
+        totalamount += 40
+
+        add = Customer.objects.filter(user=user)
+
+        return render(request, 'app/checkout.html', {'cart': cart, 'add': add, 'totalamount': totalamount})
+
+    def post(self, request):
+        user = request.user
+        cart = Cart.objects.filter(user=user)
+        totalamount = 0
+        for p in cart:
+            totalamount += p.total_cost
+        totalamount += 40
+
+        add = Customer.objects.filter(user=user)
+
+        # Process the COD order and save it to the database
+        if cart.exists():
+            cart_item = cart.first()
+            product = cart_item.product
+
+            # Get the most recent OrderPlaced instance for the current user
+            try:
+                your_order_instance = OrderPlaced.objects.filter(user=request.user).latest('order_date')
+            except OrderPlaced.DoesNotExist:
+                # Handle the case where no OrderPlaced instance is found for the current user
+                your_order_instance = None
+
+            if your_order_instance:
+                your_product_instance = product
+                your_customer_instance = your_order_instance.customer
+
+                # Create the OrderPlacedCOD instance and save it to the database
+                order = OrderPlacedCOD(
+                    user=user,  # Set the user field to the current user
+                    order=your_order_instance,
+                    product=your_product_instance,
+                    quantity=1,  # Set the quantity as needed
+                    customer=your_customer_instance,
+                    order_date=timezone.now(),
+                    status='Pending',  # You can set the initial status as 'Pending' or any other value
+                    total_amount=totalamount,
+                )
+                order.save()
+
+                # Show a success message to the user
+                messages.success(request, 'COD order placed successfully.')
+
+                # After processing the order, delete the cart items for the current user
+                cart.delete()
+
+        # Redirect the user back to the checkout page
+        return redirect('orderscod')
 
 
 def payment_done(request):
@@ -454,6 +552,25 @@ def orders(request):
 
 
 
+from django.shortcuts import render
+from .models import OrderPlacedCOD
+
+def orderscod(request):
+    totalitem = len(Cart.objects.filter(user=request.user)) if request.user.is_authenticated else 0
+    wishitem = len(Wishlist.objects.filter(user=request.user)) if request.user.is_authenticated else 0
+
+    # Get the associated Customer instance for the current user
+    customer = request.user.customer if hasattr(request.user, 'customer') else None
+    print("Customer:", customer)  # Debug statement
+
+    # Fetch OrderPlacedCOD instances related to the current customer
+    order_placed = OrderPlacedCOD.objects.filter(user=request.user)
+    print("Orders:", order_placed)  # Debug statement
+    return render(request, 'app/orderscod.html', {'order_placed': order_placed, 'totalitem': totalitem, 'wishitem': wishitem})
+
+
+
+
 # views.py
 
 from django.shortcuts import render
@@ -476,10 +593,10 @@ def search_results(request):
             Q(city__city__icontains=search_query) |
             Q(price__icontains=search_query) |
             Q(after_discount__icontains=search_query) |
-            Q(short_dec__icontains=search_query) |
+           
             Q(long_dec__icontains=search_query) |
-            Q(weight__icontains=search_query) |
-            Q(additional_information__icontains=search_query)
+            Q(weight__icontains=search_query) 
+            
         )
     else:
         products = Product.objects.all()

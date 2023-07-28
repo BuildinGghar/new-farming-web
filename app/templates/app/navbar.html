@@ -1,11 +1,26 @@
 
 {% load static %}
 
+<style>
+  /* Add fixed positioning and z-index to make the menu fixed at the top */
+  .fixed-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+  }
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-success">
+  /* Add some padding to the body to prevent content from overlapping with the fixed menu */
+  body {
+    padding-top: 70px; /* Adjust this value to match the height of the fixed menu */
+  }
+</style>
+<nav class="navbar navbar-expand-lg navbar-dark bg-black fixed-menu">
+{% comment %} <nav class="navbar navbar-expand-lg navbar-dark bg-success"> {% endcomment %}
     <div class="container-fluid">
       <a class="navbar-brand" href="/">
-        {% comment %} <img src="{% static 'app/images/Neel.png' %}" width="70" height="50" alt=""/> {% endcomment %}
+        <img src="{% static 'app/images/logo.png' %}" width="70" height="50" alt=""/>
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -34,7 +49,12 @@
           <li class="nav-item">
             <a class="nav-link text-white" href="/contact">Contact Us</a>
           </li>
-         
+          <li class="nav-item dropdown mx-2">
+            <a href="/cart" class="nav-link text-white"> <span class="badge bg-danger">{% if totalitem > 0 %} {{totalitem}} {% endif %}</span> Cart</a>
+        </li>
+        <li class="nav-item dropdown mx-2">
+            <a href="/wishlist" class="nav-link text-white"> <span class="badge bg-danger">{% if wishitem > 0 %} {{wishitem}} {% endif %}</span> <i class="fa fa-heart"></i></a>
+        </li>
           
         </ul>
         <form class="d-flex" role="search" method="GET" action="{% url 'search_results' %}">
@@ -51,16 +71,12 @@
             <ul class="dropdown-menu" aria-labelledby="profileDropdown">
                 <li><a class="dropdown-item" href="/profile"> Profile</a></li>
                 <li><a class="dropdown-item" href="/orders"> Orders</a></li>
+                <li><a class="dropdown-item" href="/orderscod"> Orders COD</a></li>
                 <li><a class="dropdown-item" href="/password-change"> Change Password</a></li>
                 <li><a class="dropdown-item" href="/logout"> Logout</a></li>
             </ul>
         </li>
-        <li class="nav-item dropdown mx-2">
-            <a href="/cart" class="nav-link text-white"> <span class="badge bg-danger">{% if totalitem > 0 %} {{totalitem}} {% endif %}</span> Cart</a>
-        </li>
-        <li class="nav-item dropdown mx-2">
-            <a href="/wishlist" class="nav-link text-white"> <span class="badge bg-danger">{% if wishitem > 0 %} {{wishitem}} {% endif %}</span> <i class="fa fa-heart"></i></a>
-        </li>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         {% if not request.user.is_authenticated %}
     <li class="nav-item dropdown mx-2">
         <a href="/accounts/login/" class="nav-link text-white">Login</a>
