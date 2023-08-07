@@ -121,6 +121,7 @@ class OrderPlaced(models.Model):
     order_date=models.DateTimeField(auto_now_add=True)
     status=models.CharField(max_length=50,choices=STATUS_CHOICES,default='Pending')
     payment=models.ForeignKey(Payment, on_delete=models.CASCADE , default="")
+    payment_status = models.CharField(max_length=200,default='Paid')
     @property
     def total_cost(self):
         return self.quantity * self.product.after_discount

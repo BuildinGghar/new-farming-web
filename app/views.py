@@ -1,36 +1,58 @@
-from . models import *
-from django.shortcuts import render, get_object_or_404, redirect 
+from .models import *
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.contrib import messages
 from .forms import *
 from django.http import JsonResponse
 from django.db.models import Q
-
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect
-
-
-
+from django.contrib.auth import authenticate, login, logout
+from django.utils.decorators import method_decorator
+import razorpay
+from django.conf import settings
+from django.utils import timezone
 # Create your views here.
+
 
 
 
 def home(request, city_name=None):
     cities = CityRegister.objects.all()
     product = Product.objects.all()
-    totalitem=0
+
+    totalitem = 0
     if request.user.is_authenticated:
-        totalitem=len(Cart.objects.filter(user=request.user))
-    wishitem=0
+        totalitem = len(Cart.objects.filter(user=request.user))
+
+    wishitem = 0
     if request.user.is_authenticated:
-        wishitem=len(Wishlist.objects.filter(user=request.user))
+        wishitem = len(Wishlist.objects.filter(user=request.user))
+        
+    cart_product_ids = []
+    if request.user.is_authenticated:
+        cart_product_ids = Cart.objects.filter(user=request.user).values_list('product__id', flat=True)
+
     context = {
         'city': cities,
-        'product':product,
-        'totalitem':totalitem,
-        'wishitem':wishitem
+        'product': product,
+        'totalitem': totalitem,
+        'wishitem': wishitem,
+        'cart_product_ids': cart_product_ids, 
     }
     return render(request, 'app/index.html', context)
+
+
+@login_required
+def remove_from_cart(request):
+    if request.method == 'POST':
+        prod_id = request.POST.get('prod_id')
+        if prod_id:
+            if request.user.is_authenticated:
+                cart_item = Cart.objects.filter(user=request.user, product__id=prod_id).first()
+                if cart_item:
+                    cart_item.delete()
+    return redirect('/')
+
 
 def product(request, city_name=None):
     totalitem=0
@@ -39,39 +61,52 @@ def product(request, city_name=None):
     wishitem=0
     if request.user.is_authenticated:
         wishitem=len(Wishlist.objects.filter(user=request.user))
+    cart_product_ids = []
+    if request.user.is_authenticated:
+        cart_product_ids = Cart.objects.filter(user=request.user).values_list('product__id', flat=True)
+
     cities = CityRegister.objects.all()
     product = Product.objects.filter(city__city=city_name) if city_name else Product.objects.all()
     context = {
         'city': cities,
         'product':product,
         'totalitem':totalitem,
-        'wishitem':wishitem
+        'wishitem':wishitem,
+        'cart_product_ids':cart_product_ids
     }
     return render(request, 'app/product.html', context)
 
 @login_required
-def product_details(request,id, city_name=None):
-    totalitem=0
+def product_details(request, id, city_name=None):
+    totalitem = 0
     if request.user.is_authenticated:
-        totalitem=len(Cart.objects.filter(user=request.user))
-    wishitem=0
+        totalitem = len(Cart.objects.filter(user=request.user))
+
+    wishitem = 0
     if request.user.is_authenticated:
-        wishitem=len(Wishlist.objects.filter(user=request.user))
+        wishitem = len(Wishlist.objects.filter(user=request.user))
+        
     cities = CityRegister.objects.all()
     related_product = Product.objects.filter(city__city=city_name) if city_name else Product.objects.all()
-    product=get_object_or_404(Product, id=id)
-    wishlist=Wishlist.objects.filter(Q(product=product) & Q(user=request.user))
+    product = get_object_or_404(Product, id=id)
+    wishlist = Wishlist.objects.filter(Q(product=product) & Q(user=request.user))
     products = Product.objects.filter(city__city=city_name) if city_name else Product.objects.all()
-    context={
-        'city':cities,
-        'product':product,
-        'related_product':related_product,
-        'totalitem':totalitem,
-        'wishlist':wishlist,
-        'wishitem':wishitem,
-        'products':products
+
+    is_product_in_cart = Cart.objects.filter(user=request.user, product=product).exists()
+
+    context = {
+        'city': cities,
+        'product': product,
+        'related_product': related_product,
+        'totalitem': totalitem,
+        'wishlist': wishlist,
+        'wishitem': wishitem,
+        'products': products,
+        'is_product_in_cart': is_product_in_cart,
+        
     }
     return render(request, 'app/product_details.html', context)
+
 
 def about(request):
     totalitem=0
@@ -102,20 +137,16 @@ def contact(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
-            # Process the form data
             name = form.cleaned_data['name']
             email = form.cleaned_data['email']
             phone_number = form.cleaned_data['phone_number']
             message = form.cleaned_data['message']
             
-            # Save the data to the database using the ContactMessage model
             contact_message = ContactMessage(name=name, email=email, phone_number=phone_number, message=message)
             contact_message.save()
 
-            # Add a success message
             messages.success(request, 'Your message was successfully sent We will contact you soon.')
 
-            # Redirect to the same page after successful form submission
             return redirect('/')
     else:
         form = ContactForm()
@@ -154,12 +185,10 @@ class CustomerRegistrationView(View):
         else:
             messages.warning(request, "Invalid Input Data")
         return render(request, 'app/CustomerRegistration.html', locals())
-    
-    
-from django.shortcuts import render, redirect
-from django.contrib import messages
+
 
 class ProfileView(View):
+    @method_decorator(login_required)
     def get(self, request):
         totalitem=0
         if request.user.is_authenticated:
@@ -179,11 +208,10 @@ class ProfileView(View):
         if request.user.is_authenticated:
             wishitem=len(Wishlist.objects.filter(user=request.user))
         if form.is_valid():
-            # Create a new Customer instance and populate it with form data
-            customer = form.save(commit=False)
-            customer.user = request.user  # Set the user for the customer
             
-            # Save the customer instance to the database
+            customer = form.save(commit=False)
+            customer.user = request.user  
+            
             customer.save()
             
             messages.success(request, 'Profile updated successfully.')
@@ -192,7 +220,7 @@ class ProfileView(View):
         messages.error(request, 'There was an error in the form submission.')
         return render(request, 'app/profile.html', {'form': form})
 
-
+@login_required
 def address_view(request):
     totalitem=0
     if request.user.is_authenticated:
@@ -207,7 +235,6 @@ def address_view(request):
         'wishitem':wishitem
     }
     return render(request, 'app/address.html', context)
-
 
 class updateAddress(View):
     def get(self, request, pk):
@@ -227,33 +254,31 @@ class updateAddress(View):
         }
         return render(request, 'app/update_address.html',context)
     def post(self, request, pk):
-        customer = Customer.objects.get(pk=pk)  # Fetch the existing customer instance
-        form = CustomerProfileForm(request.POST, instance=customer)  # Bind the form to the existing instance
+        customer = Customer.objects.get(pk=pk) 
+        form = CustomerProfileForm(request.POST, instance=customer)  
     
         if form.is_valid():
-            form.save()  # Save the updated form data to the customer instance
+            form.save()  
 
             messages.success(request, 'Updated successfully.')
             return redirect('address')
 
         messages.error(request, 'There was an error in the form submission.')
         return render(request, 'app/update_address.html', {'form': form})
-
+@login_required
 def delete_address(request, pk):
     customer = get_object_or_404(Customer, pk=pk)
     customer.delete()
     messages.success(request, 'Address deleted successfully.')
     return redirect('address')
-
-
-
+@login_required
 def add_to_cart(request):
     user=request.user
     product_id=request.GET.get('prod_id')
     product=Product.objects.get(id=product_id)
     Cart(user=user, product=product).save()
     return redirect("/cart")
-
+@login_required
 def show_cart(request):
     totalitem=0
     if request.user.is_authenticated:
@@ -269,7 +294,7 @@ def show_cart(request):
         amount=amount + value
     totalamount=amount + 40
     return render(request, 'app/addtocart.html', locals())
-
+@login_required
 def show_wishlist(request):
     totalitem=0
     if request.user.is_authenticated:
@@ -286,16 +311,14 @@ def show_wishlist(request):
     totalamount=amount + 40
     return render(request, 'app/wishlist.html', locals())
 
-from django.http import JsonResponse
-from django.db.models import Q
-from .models import Cart
 
+@login_required
 def plus_cart(request):
     if request.method == 'GET':
         prod_id = request.GET['prod_id']
         c = Cart.objects.get(Q(product=prod_id) & Q(user=request.user))
         c.quantity += 1
-        c.save()  # Corrected the typo here, it should be c.save() instead of c.save
+        c.save()  
         user = request.user
         cart = Cart.objects.filter(user=user)
         amount = 0
@@ -311,13 +334,12 @@ def plus_cart(request):
         }
         return JsonResponse(data)
 
-
+@login_required
 def minus_cart(request):
     if request.method == 'GET':
         prod_id = request.GET['prod_id']
         c = Cart.objects.get(Q(product=prod_id) & Q(user=request.user))
         
-        # Ensure the quantity doesn't go below 1
         if c.quantity > 1:
             c.quantity -= 1
             c.save()
@@ -336,7 +358,7 @@ def minus_cart(request):
         }
         return JsonResponse(data)
     
-    
+@login_required   
 def remove_cart(request):
     if request.method == 'GET':
         prod_id = request.GET['prod_id']
@@ -356,7 +378,7 @@ def remove_cart(request):
         }
         return JsonResponse(data)
     
-    
+@login_required   
 def plus_wishlist(request):
     if request.method == "GET":
         prod_id=request.GET['prod_id']
@@ -369,28 +391,17 @@ def plus_wishlist(request):
         return JsonResponse(data)
     
 from django.http import JsonResponse
-
+@login_required
 def minus_wishlist(request):
     if request.method == "GET":
         prod_id = request.GET.get('prod_id')
         product = Product.objects.get(id=prod_id)
         user = request.user
-        # Assuming 'Wishlist' is a model representing the user's wishlist
-        # Ensure you have the correct import statement for the Wishlist model
         Wishlist.objects.filter(user=user, product=product).delete()
         data = {
             'message': "Wishlist Remove Successfully",
         }
         return JsonResponse(data)
-
-    
-import razorpay 
-from django.conf import settings
-   
-import razorpay
-from django.conf import settings
-from django.shortcuts import render
-from django.views import View
 
 class checkout(View):
     def get(self, request):
@@ -428,18 +439,6 @@ class checkout(View):
         return render(request, 'app/checkout.html', locals())
 
 
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views import View
-from django.contrib import messages
-from django.utils import timezone
-from .models import OrderPlacedCOD, Cart, Customer, OrderPlaced
-
-from django.views import View
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.utils import timezone
-from app.models import Cart, OrderPlaced, Customer, OrderPlacedCOD
-
 class CODCheckout(View):
     def get(self, request):
         user = request.user
@@ -463,42 +462,34 @@ class CODCheckout(View):
 
         add = Customer.objects.filter(user=user)
 
-        # Process the COD order and save it to the database
         if cart.exists():
             cart_item = cart.first()
             product = cart_item.product
-
-            # Get the most recent OrderPlaced instance for the current user
             try:
                 your_order_instance = OrderPlaced.objects.filter(user=request.user).latest('order_date')
             except OrderPlaced.DoesNotExist:
-                # Handle the case where no OrderPlaced instance is found for the current user
                 your_order_instance = None
 
             if your_order_instance:
                 your_product_instance = product
                 your_customer_instance = your_order_instance.customer
-
-                # Create the OrderPlacedCOD instance and save it to the database
                 order = OrderPlacedCOD(
-                    user=user,  # Set the user field to the current user
+                    user=user,
                     order=your_order_instance,
                     product=your_product_instance,
-                    quantity=1,  # Set the quantity as needed
+                    quantity=1,
                     customer=your_customer_instance,
                     order_date=timezone.now(),
-                    status='Pending',  # You can set the initial status as 'Pending' or any other value
+                    status='Pending', 
                     total_amount=totalamount,
                 )
                 order.save()
 
-                # Show a success message to the user
                 messages.success(request, 'COD order placed successfully.')
 
-                # After processing the order, delete the cart items for the current user
                 cart.delete()
 
-        # Redirect the user back to the checkout page
+        
         return redirect('orderscod')
 
 
@@ -509,21 +500,19 @@ def payment_done(request):
 
     user = request.user
 
-    # Check if the user is authenticated
+    
     if not user.is_authenticated:
-        return redirect('login')  # Redirect to the login page for anonymous users
+        return redirect('login')  
 
     try:
         customer = Customer.objects.get(id=cust_id)
         payment = Payment.objects.get(razorpay_order_id=order_id)
-
-        # Check if the payment is already marked as paid
         if not payment.paid:
             payment.paid = True
             payment.razorpay_payment_id = payment_id
             payment.save()
 
-            # Assuming you have a Cart model, you can clear the cart after successful payment
+            
             cart = Cart.objects.filter(user=user)
             for c in cart:
                 OrderPlaced.objects.create(user=user, customer=customer, product=c.product, quantity=c.quantity, payment=payment)
@@ -532,14 +521,14 @@ def payment_done(request):
         return redirect("orders")
 
     except Customer.DoesNotExist:
-        # Handle the case when the customer does not exist
-        return redirect("error_page")  # Redirect to a custom error page
+        
+        return redirect("error_page")  
 
     except Payment.DoesNotExist:
-        # Handle the case when the payment does not exist
-        return redirect("error_page")  # Redirect to a custom error page
+        
+        return redirect("error_page")  
 
-
+@login_required
 def orders(request):
     totalitem=0
     if request.user.is_authenticated:
@@ -552,30 +541,23 @@ def orders(request):
 
 
 
-from django.shortcuts import render
-from .models import OrderPlacedCOD
 
+@login_required
 def orderscod(request):
     totalitem = len(Cart.objects.filter(user=request.user)) if request.user.is_authenticated else 0
     wishitem = len(Wishlist.objects.filter(user=request.user)) if request.user.is_authenticated else 0
 
-    # Get the associated Customer instance for the current user
+    
     customer = request.user.customer if hasattr(request.user, 'customer') else None
-    print("Customer:", customer)  # Debug statement
+    print("Customer:", customer)  
 
-    # Fetch OrderPlacedCOD instances related to the current customer
+    
     order_placed = OrderPlacedCOD.objects.filter(user=request.user)
-    print("Orders:", order_placed)  # Debug statement
+    print("Orders:", order_placed) 
     return render(request, 'app/orderscod.html', {'order_placed': order_placed, 'totalitem': totalitem, 'wishitem': wishitem})
 
 
 
-
-# views.py
-
-from django.shortcuts import render
-from django.db.models import Q
-from .models import Product
 
 def search_results(request):
     cities = CityRegister.objects.all()
@@ -587,7 +569,7 @@ def search_results(request):
         wishitem=len(Wishlist.objects.filter(user=request.user))
     search_query = request.GET.get('q')
     if search_query:
-        # Filter the queryset based on the search term
+    
         products = Product.objects.filter(
             Q(name__icontains=search_query) |
             Q(city__city__icontains=search_query) |
@@ -610,3 +592,38 @@ def search_results(request):
         
         }
     return render(request, 'app/search_results.html', context)
+
+@login_required
+def faq(request):
+    totalitem=0
+    if request.user.is_authenticated:
+        totalitem=len(Cart.objects.filter(user=request.user))
+    wishitem=0
+    if request.user.is_authenticated:
+        wishitem=len(Wishlist.objects.filter(user=request.user))
+    addresses = Customer.objects.filter(user=request.user)
+    context={
+        'addresses': addresses,
+        'totalitem':totalitem,
+        'wishitem':wishitem
+    }
+    return render(request, 'app/faq.html', context)
+
+
+@login_required
+def terms_condition(request):
+    totalitem=0
+    if request.user.is_authenticated:
+        totalitem=len(Cart.objects.filter(user=request.user))
+    wishitem=0
+    if request.user.is_authenticated:
+        wishitem=len(Wishlist.objects.filter(user=request.user))
+    addresses = Customer.objects.filter(user=request.user)
+    context={
+        'addresses': addresses,
+        'totalitem':totalitem,
+        'wishitem':wishitem
+    }
+    return render(request, 'app/terms_condition.html', context)
+
+

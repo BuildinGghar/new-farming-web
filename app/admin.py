@@ -43,12 +43,14 @@ from .models import Payment
 class PaymentAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'amount', 'paid', 'razorpay_order_id', 'razorpay_payment_status', 'razorpay_payment_id')
     search_fields = ('id', 'user__username', 'razorpay_order_id', 'razorpay_payment_id')
-
+admin.site.register(Payment, PaymentAdmin)
 
 
 
 class OrderPlacedAdmin(admin.ModelAdmin):
-    list_display = ('id','user', 'customers', 'products', 'quantity', 'order_date', 'status', 'total_cost' ,'payments')
+    list_display = ('id','user', 'customers', 'products', 'quantity', 'order_date', 'status', 'total_cost' ,'payments', 'payment_status')
+    search_fields = ('order__user__username', 'customer__name', 'product__name', 'order_date', 'status', 'total_amount', 'payment_status')
+    ordering = ('-order_date',)
     
     def products(self,obj):
         link=reverse("admin:app_product_change", args=[obj.product.pk])
@@ -60,8 +62,6 @@ class OrderPlacedAdmin(admin.ModelAdmin):
         link=reverse("admin:app_payment_change", args=[obj.payment.pk])
         return format_html('<a href="{}">{}</a>',link, obj.payment.razorpay_payment_id)
     
-
-admin.site.register(Payment, PaymentAdmin)
 admin.site.register(OrderPlaced, OrderPlacedAdmin)
 
 
@@ -101,3 +101,4 @@ class ContactMessageAdmin(admin.ModelAdmin):
     list_per_page = 25
 
 admin.site.register(ContactMessage, ContactMessageAdmin)
+

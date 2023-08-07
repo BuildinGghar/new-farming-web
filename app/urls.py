@@ -11,6 +11,7 @@ from django.contrib import admin
 from .views import *
 urlpatterns = [
     path('', views.home, name='index'),
+    path('remove-from-cart/', views.remove_from_cart, name='remove-from-cart'),
     path('city_product/<str:city_name>/', views.product, name='product'),
     path('product-detail/<int:id>/', views.product_details, name="product-detail"),
     path('about', views.about, name='about'),
@@ -52,6 +53,11 @@ urlpatterns = [
     path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='app/password_reset_done.html'), name='password_reset_done'),
     path('password-reset-confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='app/password_reset_confirm.html',form_class=MySetPasswordForm), name='password_reset_confirm'),
     path('password-reset-complete/', auth_views.PasswordResetCompleteView.as_view(template_name='app/password_reset_complete.html'), name='password_reset_complete'),
+    
+    
+    
+    path('faq/', views.faq, name='faq'),
+    path('terms_condition/', views.terms_condition, name='terms_condition'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
