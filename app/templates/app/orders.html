@@ -57,11 +57,15 @@
                         </div>
                     {% endif %}
                     <p>Order Id : {{op.id}}</p>
-                    <p>Payment Id : {{op.payment.razorpay_payment_id}}</p>
+                    Payment Id : <p style="color: green;">{{op.payment.razorpay_payment_id}}</p>
                 </div>
+               
             </div>
         {% endfor %}
+        <p style="color: red;">If you want to cancel your order, please contact the admin.</p>
+
     </div>
+    
 </div>
 </div>
 

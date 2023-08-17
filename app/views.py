@@ -91,7 +91,10 @@ def product_details(request, id, city_name=None):
     product = get_object_or_404(Product, id=id)
     wishlist = Wishlist.objects.filter(Q(product=product) & Q(user=request.user))
     products = Product.objects.filter(city__city=city_name) if city_name else Product.objects.all()
-
+    
+    # Filter ProductsImage objects based on the current product
+    product_images = ProductsImage.objects.filter(product=product)
+    
     is_product_in_cart = Cart.objects.filter(user=request.user, product=product).exists()
 
     context = {
@@ -102,8 +105,8 @@ def product_details(request, id, city_name=None):
         'wishlist': wishlist,
         'wishitem': wishitem,
         'products': products,
+        'product_images': product_images,  # Pass the filtered images
         'is_product_in_cart': is_product_in_cart,
-        
     }
     return render(request, 'app/product_details.html', context)
 
@@ -465,6 +468,8 @@ class CODCheckout(View):
         if cart.exists():
             cart_item = cart.first()
             product = cart_item.product
+            ordered_quantity = cart_item.quantity  # Get the ordered quantity from the cart item
+            
             try:
                 your_order_instance = OrderPlaced.objects.filter(user=request.user).latest('order_date')
             except OrderPlaced.DoesNotExist:
@@ -477,7 +482,7 @@ class CODCheckout(View):
                     user=user,
                     order=your_order_instance,
                     product=your_product_instance,
-                    quantity=1,
+                    quantity=ordered_quantity,  # Save the ordered quantity here
                     customer=your_customer_instance,
                     order_date=timezone.now(),
                     status='Pending', 
@@ -491,6 +496,7 @@ class CODCheckout(View):
 
         
         return redirect('orderscod')
+
 
 
 def payment_done(request):

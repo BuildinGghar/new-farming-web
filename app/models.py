@@ -21,7 +21,11 @@ class Product(models.Model):
     
     def __str__(self):
         return self.name
-
+    
+class ProductsImage(models.Model):
+    product=models.ForeignKey(Product,on_delete=models.CASCADE)
+    image = models.FileField(upload_to='product_images', default='https://images-platform.99static.com//EoTfSBmS_p28a4czq1Tv4p4LX44=/0x0:1874x1874/fit-in/500x500/projects-files/116/11621/1162187/ef73b7f7-e727-46c1-9bab-c67a5dab2485.jpg') 
+    
 STATE_CHOICES = (
     ('Andhra Pradesh', 'Andhra Pradesh'),
     ('Arunachal Pradesh', 'Arunachal Pradesh'),

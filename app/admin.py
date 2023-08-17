@@ -9,12 +9,16 @@ from django.contrib.auth.models import Group
 
 admin.site.register(CityRegister)
 
-
+class ProductsImageInline(admin.TabularInline):
+    model = ProductsImage
+    extra = 4
+    fields = ('image',)  # Include the image field
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'after_discount','price', 'product_availability', 'city', 'weight')
+    list_display = ('name', 'after_discount', 'price', 'product_availability', 'city', 'weight')
     list_filter = ('city', 'product_availability')
-    search_fields = ('name', 'description')
+    search_fields = ('name', 'long_dec')
+    inlines = [ProductsImageInline]
 
 admin.site.register(Product, ProductAdmin)
 
