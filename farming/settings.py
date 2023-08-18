@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-#(vfoqc7+&ge1(_^k2=hy23_+6leekc2hpe!_v42rj)td8o=ek
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-
+CSRF_TRUSTED_ORIGINS = ['https://*.farmscraft.com','https://*.35.171.166.254']
 
 # Application definition
 

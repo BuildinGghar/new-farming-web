@@ -54,27 +54,52 @@ def remove_from_cart(request):
     return redirect('/')
 
 
+from django.shortcuts import render
+from .models import Product, CityRegister, Cart, Wishlist
+
 def product(request, city_name=None):
-    totalitem=0
+    totalitem = 0
     if request.user.is_authenticated:
-        totalitem=len(Cart.objects.filter(user=request.user))
-    wishitem=0
+        totalitem = len(Cart.objects.filter(user=request.user))
+
+    wishitem = 0
     if request.user.is_authenticated:
-        wishitem=len(Wishlist.objects.filter(user=request.user))
+        wishitem = len(Wishlist.objects.filter(user=request.user))
+
     cart_product_ids = []
     if request.user.is_authenticated:
         cart_product_ids = Cart.objects.filter(user=request.user).values_list('product__id', flat=True)
 
     cities = CityRegister.objects.all()
-    product = Product.objects.filter(city__city=city_name) if city_name else Product.objects.all()
+    products = Product.objects.filter(city__city=city_name) if city_name else Product.objects.all()
+
+    # Get the selected sorting option from the query parameter
+    selected_sort = request.GET.get('sort', 'price_low_to_high')  # Default value is 'price_low_to_high'
+
+    if selected_sort == 'price_low_to_high':
+        products = products.order_by('after_discount')
+    elif selected_sort == 'price_high_to_low':
+        products = products.order_by('-after_discount')
+
+    # Get the selected price range option from the query parameter
+    selected_price_range = request.GET.get('price_range', '1_100')  # Default value is '100_250'
+    price_range_values = selected_price_range.split('_')
+    min_price = int(price_range_values[0])
+    max_price = int(price_range_values[1])
+    products = products.filter(after_discount__gte=min_price, after_discount__lte=max_price)
+
     context = {
         'city': cities,
-        'product':product,
-        'totalitem':totalitem,
-        'wishitem':wishitem,
-        'cart_product_ids':cart_product_ids
+        'product': products,
+        'totalitem': totalitem,
+        'wishitem': wishitem,
+        'cart_product_ids': cart_product_ids,
+        'selected_sort': selected_sort,
+        'selected_price_range': selected_price_range,
     }
     return render(request, 'app/product.html', context)
+
+
 
 @login_required
 def product_details(request, id, city_name=None):
