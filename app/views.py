@@ -74,7 +74,7 @@ def product(request, city_name=None):
     products = Product.objects.filter(city__city=city_name) if city_name else Product.objects.all()
 
     # Get the selected sorting option from the query parameter
-    selected_sort = request.GET.get('sort', 'price_low_to_high')  # Default value is 'price_low_to_high'
+    selected_sort = request.GET.get('sort', 'all_item')  # Default value is 'price_low_to_high'
 
     if selected_sort == 'price_low_to_high':
         products = products.order_by('after_discount')
@@ -82,7 +82,7 @@ def product(request, city_name=None):
         products = products.order_by('-after_discount')
 
     # Get the selected price range option from the query parameter
-    selected_price_range = request.GET.get('price_range', '1_100')  # Default value is '100_250'
+    selected_price_range = request.GET.get('price_range', '1_100000')  # Default value is '100_250'
     price_range_values = selected_price_range.split('_')
     min_price = int(price_range_values[0])
     max_price = int(price_range_values[1])
