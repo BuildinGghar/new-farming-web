@@ -187,51 +187,59 @@
                
            
                <div class="container">
-                 <div class="row">
-                   {% for product_obj in product %}
-                     <div class="col-md-3"> <!-- You can adjust the column size as per your design -->
-                       <div class="product-card">
-                         <a href="{% url 'product-detail' id=product_obj.id %}" class="btn">
-                           <div class="product-image">
-                             <img src="{{ product_obj.image.url }}" alt="Product Image">
-                           </div>
-                           <div class="product-details">
-                             <h2 class="product-title">{{ product_obj.name }}</h2>
-                             <div class="fw-bold text-danger">
-                               Rs.{{ product_obj.after_discount }}/-
-                               <small class="fw-light text-decoration-line-through">{{ product_obj.price }}</small>
-                             </div>
-                           </div>
-                         </a>
-                         
-                         <div class="row justify-content-center">
-                           <div class="col-sm-6 col-md-4">
-                             {% if totalitem > 0 and product_obj.id in cart_product_ids %}
-                               <form action="{% url 'remove-from-cart' %}" method="post">
-                                 {% csrf_token %}
-                                 <input type="hidden" name="prod_id" value="{{ product_obj.id }}" />
-                                 <button type="submit" class="btn btn-danger shadow px-4 py-2">Remove </button>
-                               </form>
-                             {% else %}
-                               <!-- Show the "Add to Cart" form -->
-                               <form action="/add-to-cart" class="d-flex justify-content-center justify-content-sm-start mb-2">
-                                 <input type="hidden" name="prod_id" value="{{ product_obj.id }}" />
-                                 <button type="submit" class="btn btn-primary shadow px-4 py-2">Add </button>
-                               </form>
-                             {% endif %}
-                           </div>
-                           <div class="col-sm-6 col-md-4">
-                             <form action="/add-to-cart" class="d-flex justify-content-center justify-content-sm-start mb-2">
-                               <input type="hidden" name="prod_id" value="{{ product_obj.id }}" />
-                               <button type="submit" class="btn btn-warning shadow px-4 py-2">Buy</button>
-                             </form>
-                           </div>
-                         </div>
-                       </div>
+                  <div class="row">
+                    {% for product_obj in product|slice:"0:8" %}
+                      <div class="col-md-3">
+                        <div class="product-card">
+                          <a href="{% url 'product-detail' id=product_obj.id %}" class="btn">
+                            <div class="product-image">
+                              <img src="{{ product_obj.image.url }}" alt="Product Image">
+                            </div>
+                            <div class="product-details">
+                              <h2 class="product-title">{{ product_obj.name }}</h2>
+                              <div class="fw-bold text-danger">
+                                Rs.{{ product_obj.after_discount }}/-
+                                <small class="fw-light text-decoration-line-through">{{ product_obj.price }}</small>
+                              </div>
+                            </div>
+                          </a>
+                          <div class="row justify-content-center">
+                            <div class="col-sm-6 col-md-4">
+                              {% if totalitem > 0 and product_obj.id in cart_product_ids %}
+                                <form action="{% url 'remove-from-cart' %}" method="post">
+                                  {% csrf_token %}
+                                  <input type="hidden" name="prod_id" value="{{ product_obj.id }}" />
+                                  <button type="submit" class="btn btn-danger shadow px-4 py-2">Remove</button>
+                                </form>
+                              {% else %}
+                                <form action="/add-to-cart" class="d-flex justify-content-center justify-content-sm-start mb-2">
+                                  <input type="hidden" name="prod_id" value="{{ product_obj.id }}" />
+                                  <button type="submit" class="btn btn-primary shadow px-4 py-2">Add</button>
+                                </form>
+                              {% endif %}
+                            </div>
+                            <div class="col-sm-6 col-md-4">
+                              <form action="/add-to-cart" class="d-flex justify-content-center justify-content-sm-start mb-2">
+                                <input type="hidden" name="prod_id" value="{{ product_obj.id }}" />
+                                <button type="submit" class="btn btn-warning shadow px-4 py-2">Buy</button>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    {% endfor %}
+                  </div>
+                  
+                  <div class="row justify-content-center mt-4">
+                     <div class="col-md-4 text-center"> <!-- Added "text-center" class to center content -->
+                         <a href="{% url 'all_product' %}" class="btn btn-primary">View More Products</a>
                      </div>
-                   {% endfor %}
                  </div>
-               </div>
+                 
+                   
+                   <br><br><br>
+                
+                
                
 
 

@@ -41,6 +41,59 @@ def home(request, city_name=None):
     }
     return render(request, 'app/index.html', context)
 
+def all_product(request):
+    cities = CityRegister.objects.all()
+    products = Product.objects.all()
+
+    totalitem = 0
+    if request.user.is_authenticated:
+        totalitem = len(Cart.objects.filter(user=request.user))
+
+    wishitem = 0
+    if request.user.is_authenticated:
+        wishitem = len(Wishlist.objects.filter(user=request.user))
+        
+    cart_product_ids = []
+    if request.user.is_authenticated:
+        cart_product_ids = Cart.objects.filter(user=request.user).values_list('product__id', flat=True)
+    
+    # Process the form data
+    selected_sort = request.GET.get('sort', 'price_low_to_high')
+    selected_price_range = request.GET.get('price_range', '1_100000')
+    selected_city = request.GET.get('city', None)
+    
+    if selected_sort == 'price_low_to_high':
+        products = products.order_by('after_discount')
+    elif selected_sort == 'price_high_to_low':
+        products = products.order_by('-after_discount')
+    
+    price_range_values = selected_price_range.split('_')
+    min_price = int(price_range_values[0])
+    max_price = int(price_range_values[1])
+    products = products.filter(after_discount__gte=min_price, after_discount__lte=max_price)
+    
+    if selected_city:
+        selected_city_obj = get_object_or_404(CityRegister, city=selected_city)
+        products = products.filter(city=selected_city_obj)
+
+    # ... (rest of the code)
+
+    context = {
+        'city': cities,
+        'product': products,
+        'totalitem': totalitem,
+        'wishitem': wishitem,
+        'cart_product_ids': cart_product_ids,
+        'selected_sort': selected_sort,
+        'selected_price_range': selected_price_range,
+        'selected_city': selected_city,
+    }
+    return render(request, 'app/all_product.html', context)
+
+
+
+
+
 
 @login_required
 def remove_from_cart(request):
