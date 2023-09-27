@@ -8,8 +8,15 @@ class CityRegister(models.Model):
     
     def __str__(self):
         return self.city
+    
+class category(models.Model):
+    name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='category_images', null= True)
+    def __str__(self):
+        return self.name
 
 class Product(models.Model):
+    category=models.ForeignKey(category, on_delete=models.CASCADE, blank=True ,null=True)
     city = models.ForeignKey(CityRegister, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     image = models.ImageField(upload_to='product_images', null= True)
@@ -161,3 +168,6 @@ class ContactMessage(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.email}"
+    
+    
+    

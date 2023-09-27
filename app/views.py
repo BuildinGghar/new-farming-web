@@ -19,7 +19,7 @@ from django.utils import timezone
 def home(request, city_name=None):
     cities = CityRegister.objects.all()
     product = Product.objects.all()
-
+    category_objects = category.objects.all()
     totalitem = 0
     if request.user.is_authenticated:
         totalitem = len(Cart.objects.filter(user=request.user))
@@ -34,6 +34,7 @@ def home(request, city_name=None):
 
     context = {
         'city': cities,
+        'category_objects':category_objects,
         'product': product,
         'totalitem': totalitem,
         'wishitem': wishitem,
@@ -44,7 +45,7 @@ def home(request, city_name=None):
 def all_product(request):
     cities = CityRegister.objects.all()
     products = Product.objects.all()
-
+    category_objects = category.objects.all()
     totalitem = 0
     if request.user.is_authenticated:
         totalitem = len(Cart.objects.filter(user=request.user))
@@ -81,6 +82,7 @@ def all_product(request):
     context = {
         'city': cities,
         'product': products,
+        'category_objects':category_objects,
         'totalitem': totalitem,
         'wishitem': wishitem,
         'cart_product_ids': cart_product_ids,
@@ -91,7 +93,87 @@ def all_product(request):
     return render(request, 'app/all_product.html', context)
 
 
+def all_category(request):
+    cities = CityRegister.objects.all()
+    products = Product.objects.all()
+    ategory_objects = category.objects.all()
+    totalitem = 0
+    if request.user.is_authenticated:
+        totalitem = len(Cart.objects.filter(user=request.user))
 
+    wishitem = 0
+    if request.user.is_authenticated:
+        wishitem = len(Wishlist.objects.filter(user=request.user))
+        
+    cart_product_ids = []
+    if request.user.is_authenticated:
+        cart_product_ids = Cart.objects.filter(user=request.user).values_list('product__id', flat=True)
+    
+    # Process the form data
+    category_objects = category.objects.all()
+    # ... (rest of the code)
+
+    context = {
+        'city': cities,
+        'product': products,
+        'category_objects':category_objects,
+        'totalitem': totalitem,
+        'wishitem': wishitem,
+        'cart_product_ids': cart_product_ids,
+       'category_objects':category_objects,
+    }
+    return render(request, 'app/all_category.html', context)
+
+
+
+from django.db.models import F
+
+def all_category_filter(request, category_id):
+    # Get the selected category
+    try:
+        desired_category = category.objects.get(id=category_id)
+    except category.DoesNotExist:
+        desired_category = None
+
+    # Filter products by category if a category is selected
+    if desired_category:
+        products = Product.objects.filter(category=desired_category)
+    else:
+        products = Product.objects.all()
+
+    # Sort the products based on the selected sorting option
+    sort_option = request.GET.get('sort', 'all_item')
+
+    if sort_option == 'price_low_to_high':
+        products = products.order_by('price')
+    elif sort_option == 'price_high_to_low':
+        products = products.order_by(F('price').desc())
+
+    totalitem = 0
+    if request.user.is_authenticated:
+        totalitem = len(Cart.objects.filter(user=request.user))
+
+    wishitem = 0
+    if request.user.is_authenticated:
+        wishitem = len(Wishlist.objects.filter(user=request.user))
+        
+    cart_product_ids = []
+    if request.user.is_authenticated:
+        cart_product_ids = Cart.objects.filter(user=request.user).values_list('product__id', flat=True)
+    
+    # Retrieve all categories for the filter dropdown
+    category_objects = category.objects.all()
+    
+
+    context = {
+        'product': products,
+        'totalitem': totalitem,
+        'wishitem': wishitem,
+        'cart_product_ids': cart_product_ids,
+        'category_objects': category_objects,
+        'desired_category': desired_category, 
+    }
+    return render(request, 'app/all_category_filter.html', context)
 
 
 
@@ -140,7 +222,7 @@ def product(request, city_name=None):
     min_price = int(price_range_values[0])
     max_price = int(price_range_values[1])
     products = products.filter(after_discount__gte=min_price, after_discount__lte=max_price)
-
+    category_objects = category.objects.all()
     context = {
         'city': cities,
         'product': products,
@@ -149,6 +231,7 @@ def product(request, city_name=None):
         'cart_product_ids': cart_product_ids,
         'selected_sort': selected_sort,
         'selected_price_range': selected_price_range,
+        'category_objects':category_objects,
     }
     return render(request, 'app/product.html', context)
 
@@ -174,8 +257,9 @@ def product_details(request, id, city_name=None):
     product_images = ProductsImage.objects.filter(product=product)
     
     is_product_in_cart = Cart.objects.filter(user=request.user, product=product).exists()
-
+    category_objects = category.objects.all()
     context = {
+        'category_objects':category_objects,
         'city': cities,
         'product': product,
         'related_product': related_product,
@@ -190,6 +274,7 @@ def product_details(request, id, city_name=None):
 
 
 def about(request):
+    category_objects = category.objects.all()
     totalitem=0
     if request.user.is_authenticated:
         totalitem=len(Cart.objects.filter(user=request.user))

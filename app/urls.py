@@ -12,6 +12,9 @@ from .views import *
 urlpatterns = [
     path('', views.home, name='index'),
     path('all_product', views.all_product, name='all_product'),
+    path('all_category', views.all_category, name='all_category'),
+    path('all_category_filter/<int:category_id>/', views.all_category_filter, name='all_category_filter'),
+
     path('remove-from-cart/', views.remove_from_cart, name='remove-from-cart'),
     path('city_product/<str:city_name>/', views.product, name='product'),
     path('product-detail/<int:id>/', views.product_details, name="product-detail"),

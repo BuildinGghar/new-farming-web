@@ -8,6 +8,8 @@ from django.contrib.auth.models import Group
 
 
 admin.site.register(CityRegister)
+admin.site.register(category)
+
 
 class ProductsImageInline(admin.TabularInline):
     model = ProductsImage
@@ -15,7 +17,6 @@ class ProductsImageInline(admin.TabularInline):
     fields = ('image',)  # Include the image field
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'after_discount', 'price', 'product_availability', 'city', 'weight')
     list_filter = ('city', 'product_availability')
     search_fields = ('name', 'long_dec')
     inlines = [ProductsImageInline]

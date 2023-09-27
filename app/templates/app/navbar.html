@@ -19,9 +19,12 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-black fixed-menu">
 {% comment %} <nav class="navbar navbar-expand-lg navbar-dark bg-success"> {% endcomment %}
     <div class="container-fluid">
-      <a class="navbar-brand" href="/">
-        <img src="{% static 'app/images/logo.png' %}" width="70" height="100" alt=""/>
+      <div class="navbar-brand">
+    <a href="/">
+        <img src="{% static 'app/images/logo.png' %}" class="img-fluid" alt="Logo" width="70" height="100">
     </a>
+</div>
+
     
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -43,6 +46,19 @@
               <li><a class="dropdown-item" href="{% url 'product' city_name=city_obj.city %}">{{ city_obj.city }}</a></li>
               {% endfor %}
           </ul>
+          
+        
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Kitchen
+            </a>
+            <ul class="dropdown-menu" id="cityDropdown">
+              {% for category_obj in category_objects %}
+                <a class="dropdown-item" href="{% url 'all_category_filter' category_id=category_obj.id %}">{{ category_obj.name }}</a>
+            {% endfor %}
+          </ul>
+          
+
           
           
           
