@@ -18,6 +18,42 @@
 </style>
 <nav class="navbar navbar-expand-lg navbar-dark bg-black fixed-menu">
 {% comment %} <nav class="navbar navbar-expand-lg navbar-dark bg-success"> {% endcomment %}
+<style>
+    nav {
+        height: 11%;
+    }
+
+    .navbar-brand {
+        width: 170px;
+        
+        padding-top: 20px;
+    }
+
+    .navbar-brand img {
+        width: 90%;
+        height: 90%;
+        text-align: center;
+    }
+
+    /* Add responsive styles for screens smaller than 768px */
+    @media (max-width: 768px) {
+        nav {
+          width: 100%;
+            height: auto; /* Adjust the height for smaller screens */
+        }
+
+        .navbar-brand {
+            width: 20%; /* Make the logo take up the full width */
+             /* Reduce the top padding */
+        }
+        img{
+          width: ;
+        }
+
+        
+    }
+</style>
+
     <div class="container-fluid">
       <div class="navbar-brand">
     <a href="/">
