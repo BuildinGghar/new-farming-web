@@ -87,15 +87,70 @@ admin.site.unregister(Group)
 
 
 
+# from django.contrib import admin
+# from .models import OrderPlacedCOD
+
+# from django.contrib import admin
+# from django.urls import reverse
+# from django.utils.html import format_html
+# from .models import OrderPlacedCOD  # Import your model here
+
+# @admin.register(OrderPlacedCOD)
+# class OrderPlacedCODAdmin(admin.ModelAdmin):
+#     list_display = ('user', 'order', 'product_link', 'quantity', 'customer_link', 'order_date', 'status', 'total_amount')
+#     list_filter = ('status', 'user', 'order', 'product', 'customer', 'order_date', 'total_amount')
+#     search_fields = ('order__user__username', 'customer__name', 'product__name', 'order_date', 'status', 'total_amount')
+#     ordering = ('-order_date',)
+
+#     def product_link(self, obj):
+#         link = reverse("admin:app_product_change", args=[obj.product.pk])
+#         return format_html('<a href="{}">{}</a>', link, obj.product.name)
+#     product_link.short_description = 'Product'
+
+#     def customer_link(self, obj):
+#         link = reverse("admin:app_customer_change", args=[obj.customer.pk])
+#         return format_html('<a href="{}">{}</a>', link, obj.customer.name)
+#     customer_link.short_description = 'Customer'
+
+#     def get_search_results(self, request, queryset, search_term):
+#         queryset, use_distinct = super().get_search_results(request, queryset, search_term)
+
+#         try:
+#             search_term_as_int = int(search_term)
+#             queryset |= self.model.objects.filter(product=search_term_as_int) | self.model.objects.filter(customer=search_term_as_int)
+#         except ValueError:
+#             pass
+
+#         return queryset, use_distinct
+
 from django.contrib import admin
-from .models import OrderPlacedCOD
+from django.urls import reverse
+from django.utils.html import format_html
+from .models import OrderPlacedCOD  # Import your model here
 
 @admin.register(OrderPlacedCOD)
 class OrderPlacedCODAdmin(admin.ModelAdmin):
-    list_display = ('user','order', 'product', 'quantity', 'customer', 'order_date', 'status', 'total_amount')
-    list_filter = ('status',)
+    list_display = ('user', 'order', 'product_link', 'quantity', 'customer', 'order_date', 'status', 'total_amount')
+    list_filter = ('status', 'user', 'order', 'product', 'customer', 'order_date', 'total_amount')
     search_fields = ('order__user__username', 'customer__name', 'product__name', 'order_date', 'status', 'total_amount')
     ordering = ('-order_date',)
+
+    def product_link(self, obj):
+        link = reverse("admin:app_product_change", args=[obj.product.pk])
+        return format_html('<a href="{}">{}</a>', link, obj.product.name)
+    product_link.short_description = 'Product'
+
+    def get_search_results(self, request, queryset, search_term):
+        queryset, use_distinct = super().get_search_results(request, queryset, search_term)
+
+        try:
+            search_term_as_int = int(search_term)
+            queryset |= self.model.objects.filter(product=search_term_as_int)
+        except ValueError:
+            pass
+
+        return queryset, use_distinct
+    
 
 # You can register other models here if needed
 

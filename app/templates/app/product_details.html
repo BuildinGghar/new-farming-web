@@ -360,42 +360,48 @@
    </div>
 </div>
 <!-- Add the necessary link and script tags -->
+
+
+<br><br><br>
+
 <div id="carouselExampleControls" class="carousel carousel-dark slide" data-bs-ride="carousel">
-   <div class="carousel-inner">
-      <div style="text-align: center;">
-         <h3>Related Product......</h3>
-      </div>
-      {% for product in products %}
-      {% if forloop.counter0|divisibleby:4 %}
-      <div class="carousel-item {% if forloop.first %}active{% endif %}">
-         <div class="card-wrapper container-sm d-flex justify-content-around">
-            {% endif %}
-            <a href="{% url 'product-detail' id=product.id %}" class="btn">
-               <div class="card" style="width: 18rem;">
-                  <img src="{{ product.image.url }}" class="card-img-top" alt="...">
-                  <div class="card-body">
-                     <h5 class="card-title">{{ product.name }}</h5>
-                     <!-- Add other product information here if needed -->
-                     <h5 style="color: green;">Rs.{{ product.after_discount }}/-</h5>
-                     <small class="text-decoration-line-through text-muted fs-5"><del>Rs.{{ product.price }}/-</del></small>
-                  </div>
-               </div>
-            </a>
-            {% if forloop.counter0|add:1|divisibleby:4 or forloop.last %}
-         </div>
-      </div>
-      {% endif %}
-      {% endfor %}
-   </div>
+  <div class="carousel-inner">
+     <div class="carousel-item active">
+        <div class="row justify-content-center">
+           {% for product in products %}
+           <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+              <a href="{% url 'product-detail' id=product.id %}" class="btn">
+                 <div class="card mb-4">
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                       <h5 class="card-title">{{ product.name }}</h5>
+                       <h5 class="card-title">{{ product.weight }}</h5>
+                       <p style="color: green;">Rs.{{ product.after_discount }}/-</p>
+                       <p class="text-decoration-line-through text-muted"><del>Rs.{{ product.price }}/-</del></p>
+                    </div>
+                 </div>
+              </a>
+           </div>
+           {% endfor %}
+        </div>
+     </div>
+  </div>
+
+
+
+   
+
    <!-- Add carousel controls -->
-   <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-   <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-   <span class="visually-hidden">Previous</span>
-   </button>
-   <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-   <span class="carousel-control-next-icon" aria-hidden="true"></span>
-   <span class="visually-hidden">Next</span>
-   </button>
+   {% comment %} <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+    </button>
+ 
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+    </button> {% endcomment %}
+
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>

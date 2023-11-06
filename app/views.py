@@ -796,3 +796,22 @@ def terms_condition(request):
     return render(request, 'app/terms_condition.html', context)
 
 
+
+@login_required
+def privacy(request):
+    totalitem=0
+    if request.user.is_authenticated:
+        totalitem=len(Cart.objects.filter(user=request.user))
+    wishitem=0
+    if request.user.is_authenticated:
+        wishitem=len(Wishlist.objects.filter(user=request.user))
+    addresses = Customer.objects.filter(user=request.user)
+    context={
+        'addresses': addresses,
+        'totalitem':totalitem,
+        'wishitem':wishitem
+    }
+    return render(request, 'app/privacy.html', context)
+
+
+

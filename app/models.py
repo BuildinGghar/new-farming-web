@@ -80,7 +80,7 @@ class Customer(models.Model):
     zipcode=models.CharField(max_length=6)
     state=models.CharField(choices=STATE_CHOICES, max_length=100)
     def __str__(self):
-        return self.name
+        return f"{self.name},{self.locality},{self.city},{self.mobile},{self.zipcode},{self.state}"
     
     
 class Cart(models.Model):

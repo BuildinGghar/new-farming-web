@@ -62,6 +62,10 @@ urlpatterns = [
     
     path('faq/', views.faq, name='faq'),
     path('terms_condition/', views.terms_condition, name='terms_condition'),
+    path('privacy/', views.privacy, name='privacy'),
+    
+    
+    
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
@@ -70,3 +74,5 @@ if settings.DEBUG:
 admin.site.site_header= "Farming"
 admin.site.site_title= "Farming"
 admin.site.site_index_title= "Welcome to Farming Admin Site"
+
+

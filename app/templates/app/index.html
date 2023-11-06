@@ -102,6 +102,69 @@
 {% endblock information %} 
 {% block main-content %}
 <div class="container">
+
+
+     
+   <br><br><br>
+
+   <h2 class="text-center"> All Category</h2>
+   <div class="container mt-4">
+    <div class="row">
+      {% for product_obj in category_objects|slice:"0:8" %}
+        <div class="col-md-3">
+          <div class="product-card">
+            <a href="{% url 'all_category_filter' category_id=product_obj.id %}">
+              <div class="product-image">
+                <img src="{{ product_obj.image.url }}" alt="Product Image">
+              </div>
+              <div class="product-details">
+                <h2 class="product-title">{{ product_obj.name }}</h2>
+              </div>
+            </a>
+          </div>
+        </div>
+    {% endfor %}
+
+    </div>
+</div>
+  
+                
+                
+                <div class="row justify-content-center mt-4">
+                   <div class="col-md-4 text-center"> <!-- Added "text-center" class to center content -->
+                       <a href="{% url 'all_category' %}" class="btn btn-primary">View More Category</a>
+                   </div>
+               </div>
+               
+                 
+                 <br><br><br>     
+
+
+                 <br><br><br>
+
+
+                 <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
+                  <style>
+                     @media (max-width: 768px){
+                     .carousel-item{
+                        margin-top: 10%;
+                     }
+                  }
+                  </style>
+                  <div class="carousel-inner">
+                     <div class="carousel-item active">
+                        <img src="{% static 'app/images/krish.png' %}" class="d-block w-100" alt="...">
+                     </div>
+                     <div class="carousel-item ">
+                        <img src="https://marketplace.canva.com/EAE91rVXZu0/1/0/1600w/canva-white-green-modern-clean-eat-better-food-linkedin-banner-XxWD8ogyHbk.jpg" class="d-block w-100" alt="...">
+                     </div>
+                     <div class="carousel-item ">
+                        <img src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/food-linkedin-career-cover-photo-design-template-1f7b22ebfd7bcdf42d90c6a407c8aef0_screen.jpg?ts=1630350557" class="d-block w-100" alt="...">
+                     </div>
+                     
+                  </div>
+               </div>
+               <br><br><br>
    
    <h2 class="text-center"> All Products</h2>
    <br/><br/><br/><br/>
@@ -145,6 +208,9 @@
           font-weight: bold;
           margin-top: 10px;
       }
+      a{
+       text-decoration: none;
+      }
   </style>
     <div class="container mt-4">
       <div class="row">
@@ -157,6 +223,7 @@
                           </div>
                           <div class="product-details">
                               <h2 class="product-title">{{ product_obj.name }}</h2>
+                              <h2 class="product-title">{{ product_obj.weight }}</h2>
                               <div class="product-price">
                                   <span class="text-danger">Rs.{{ product_obj.after_discount }}/-
                                       <small class="text-decoration-line-through">{{ product_obj.price }}</small>
@@ -168,7 +235,10 @@
               </div>
           {% endfor %}
       </div>
-  </div>
+  </div>  
+
+
+
     
                   </div>
                   
@@ -177,70 +247,14 @@
                          <a href="{% url 'all_product' %}" class="btn btn-primary">View More Products</a>
                      </div>
                  </div>
-                 
                  <br><br><br>
-
-
-                 <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
-                  <style>
-                     @media (max-width: 768px){
-                     .carousel-item{
-                        margin-top: 10%;
-                     }
-                  }
-                  </style>
-                  <div class="carousel-inner">
-                     <div class="carousel-item active">
-                        <img src="{% static 'app/images/krish.png' %}" class="d-block w-100" alt="...">
-                     </div>
-                     <div class="carousel-item ">
-                        <img src="https://marketplace.canva.com/EAE91rVXZu0/1/0/1600w/canva-white-green-modern-clean-eat-better-food-linkedin-banner-XxWD8ogyHbk.jpg" class="d-block w-100" alt="...">
-                     </div>
-                     <div class="carousel-item ">
-                        <img src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/food-linkedin-career-cover-photo-design-template-1f7b22ebfd7bcdf42d90c6a407c8aef0_screen.jpg?ts=1630350557" class="d-block w-100" alt="...">
-                     </div>
-                     
-                  </div>
-               </div>
+                 
 
 
 
 
 
-                   
-                   <br><br><br>
-
-                   <h2 class="text-center"> All Category</h2>
-                   <div class="container mt-4">
-                    <div class="row">
-                      {% for product_obj in category_objects|slice:"0:8" %}
-                        <div class="col-md-3">
-                          <div class="product-card">
-                            <a href="{% url 'all_category_filter' category_id=product_obj.id %}">
-                              <div class="product-image">
-                                <img src="{{ product_obj.image.url }}" alt="Product Image">
-                              </div>
-                              <div class="product-details">
-                                <h2 class="product-title">{{ product_obj.name }}</h2>
-                              </div>
-                            </a>
-                          </div>
-                        </div>
-                    {% endfor %}
-
-                    </div>
-                </div>
-                  
-                                
-                                
-                                <div class="row justify-content-center mt-4">
-                                   <div class="col-md-4 text-center"> <!-- Added "text-center" class to center content -->
-                                       <a href="{% url 'all_category' %}" class="btn btn-primary">View More Category</a>
-                                   </div>
-                               </div>
-                               
-                                 
-                                 <br><br><br>          
+                      
 
    <style>
       .grid-image {
