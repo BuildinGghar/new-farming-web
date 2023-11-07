@@ -2,85 +2,78 @@
 <style>
    /* Add fixed positioning and z-index to make the menu fixed at the top */
    .fixed-menu {
-   position: fixed;
-   top: 0;
-   left: 0;
-   right: 0;
-   z-index: 999;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 999;
    }
    /* Add some padding to the body to prevent content from overlapping with the fixed menu */
    body {
-   padding-top: 70px; /* Adjust this value to match the height of the fixed menu */
+      padding-top: 70px; /* Adjust this value to match the height of the fixed menu */
    }
 </style>
 <nav class="navbar navbar-expand-lg navbar-dark bg-black fixed-menu">
-{% comment %} 
-<nav class="navbar navbar-expand-lg navbar-dark bg-success">
-   {% endcomment %}
    <style>
       nav {
-      height: 11%;
+         height: 11%;
       }
       .navbar-brand {
-      width: 170px;
-      padding-top: 20px;
+         width: 170px;
+         padding-top: 20px;
       }
       .navbar-brand img {
-      width: 90%;
-      height: 90%;
-      text-align: center;
+         width: 90%;
+         height: 90%;
+         text-align: center;
       }
       /* Add responsive styles for screens smaller than 768px */
       @media (max-width: 768px) {
-      nav {
-      width: 100%;
-      height: auto; /* Adjust the height for smaller screens */
-      }
-      .navbar-brand {
-      width: 20%; /* Make the logo take up the full width */
-      /* Reduce the top padding */
-      }
-      img{
-      width: ;
-      }
-      }
-      @media (max-width: 991px){
-      nav{
-      height: auto;
-      }
+         nav {
+            height: auto; /* Adjust the height for smaller screens */
+         }
+         .navbar-brand {
+            width: 20%; /* Make the logo take up the full width */
+            padding-top: 10px; /* Reduce the top padding */
+         }
       }
    </style>
    <div class="container-fluid">
       <div class="navbar-brand">
          <a href="/">
-         <img src="{% static 'app/images/logo.png' %}" class="img-fluid" alt="Logo" width="70" height="100">
+            <img src="{% static 'app/images/logo.png' %}" class="img-fluid" alt="Logo" width="70" height="100">
          </a>
       </div>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
+         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <!-- Your navigation links -->
             <li class="nav-item">
                <a class="nav-link active" aria-current="page" href="/">Home</a>
             </li>
             <li class="nav-item">
-               <a class="nav-link active" aria-current="page" href="/all_product">Products</a>
-            </li>
+              <a class="nav-link text-white" href="/all_product">Products</a>
+           </li>
+            
             <li class="nav-item dropdown">
                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                City
                </a>
                <ul class="dropdown-menu" id="cityDropdown">
+                  <!-- Add your City dropdown items here -->
                   {% for city_obj in city %}
                   <li><a class="dropdown-item" href="{% url 'product' city_name=city_obj.city %}">{{ city_obj.city }}</a></li>
                   {% endfor %}
                </ul>
+            </li>
             <li class="nav-item dropdown">
                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                Kitchen
                </a>
                <ul class="dropdown-menu" id="cityDropdown">
+                  <!-- Add your Kitchen dropdown items here -->
                   {% for category_obj in category_objects %}
                   <a class="dropdown-item" href="{% url 'all_category_filter' category_id=category_obj.id %}">{{ category_obj.name }}</a>
                   {% endfor %}
@@ -99,25 +92,27 @@
                <a href="/wishlist" class="nav-link text-white"> <span class="badge bg-danger">{% if wishitem > 0 %} {{wishitem}} {% endif %}</span> <i class="fa fa-heart"></i></a>
             </li>
          </ul>
+         <a class="nav-link text-white" href="tel:+918035564342">Call to Order +91 8035564342</a>&nbsp;&nbsp;
          <form class="d-flex" role="search" method="GET" action="{% url 'search_results' %}">
             <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search">
             <button class="btn btn-danger" type="submit">Search</button>
          </form>
       </div>
-
-       <style>
+      <style>
         .dropdown-menu[data-bs-popper] {
           top: 100%;
           left: -50px;
           margin-top: var(--bs-dropdown-spacer);
-      }
-       </style>
+        }
+      </style>
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+         <!-- Your dropdown menu items -->
          <li class="nav-item dropdown mx-2">
             <a class="nav-link dropdown-toggle text-white" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             {{request.user.username}}
             </a>
             <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+               <!-- Add your profile dropdown items here -->
                <li><a class="dropdown-item" href="/profile"> Profile</a></li>
                <li><a class="dropdown-item" href="/orders"> Orders</a></li>
                <li><a class="dropdown-item" href="/orderscod"> Orders COD</a></li>
@@ -135,8 +130,5 @@
          </li>
          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       </ul>
-
-
-
    </div>
 </nav>
