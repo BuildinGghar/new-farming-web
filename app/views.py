@@ -831,3 +831,7 @@ def support_policy(request):
     }
     return render(request, 'app/support_policy.html', context)
 
+
+
+
+    

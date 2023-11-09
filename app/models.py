@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.urls import reverse
 # Create your models here.
 class CityRegister(models.Model):
     city=models.CharField(max_length=200)
@@ -8,12 +8,19 @@ class CityRegister(models.Model):
     
     def __str__(self):
         return self.city
-    
+    def get_absolute_url(self):
+        # Assuming you have a detail view named 'city_detail'
+        return reverse('city_detail', args=[str(self.id)])
+
 class category(models.Model):
     name = models.CharField(max_length=100)
     image = models.ImageField(upload_to='category_images', null= True)
     def __str__(self):
         return self.name
+    
+    def get_absolute_url(self):
+        # Assuming you have a detail view named 'category_detail'
+        return reverse('category_detail', args=[str(self.id)])
 
 class Product(models.Model):
     category=models.ForeignKey(category, on_delete=models.CASCADE, blank=True ,null=True)
@@ -29,9 +36,17 @@ class Product(models.Model):
     def __str__(self):
         return self.name
     
+    def get_absolute_url(self):
+        # Assuming you have a detail view named 'product_detail'
+        return reverse('product_detail', args=[str(self.id)])
+    
 class ProductsImage(models.Model):
     product=models.ForeignKey(Product,on_delete=models.CASCADE)
     image = models.FileField(upload_to='product_images', default='https://images-platform.99static.com//EoTfSBmS_p28a4czq1Tv4p4LX44=/0x0:1874x1874/fit-in/500x500/projects-files/116/11621/1162187/ef73b7f7-e727-46c1-9bab-c67a5dab2485.jpg') 
+    def get_absolute_url(self):
+        # Assuming you have a detail view named 'product_image_detail'
+        return reverse('product_image_detail', args=[str(self.id)])
+
     
 STATE_CHOICES = (
     ('Andhra Pradesh', 'Andhra Pradesh'),
@@ -174,16 +189,4 @@ class ContactMessage(models.Model):
     
     
 
-
-
-    
-    
-from haystack import indexes
-
-class YourModelIndex(indexes.SearchIndex, indexes.Indexable):
-    text = indexes.CharField(document=True, use_template=True)
-
-    def get_model(self):
-        from app.models import YourModel  # Import inside the method
-        return YourModel
 

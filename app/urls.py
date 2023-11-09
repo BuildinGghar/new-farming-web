@@ -11,12 +11,21 @@ from django.contrib import admin
 from .views import *
 
 from django.contrib.sitemaps.views import sitemap
-from .sitemaps import MySitemap
+from .sitemaps import *
 
 sitemaps = {
-    'my_sitemap': MySitemap,
+    'city_register': CityRegisterSitemap,
+    'category': CategorySitemap,
+    'product': ProductSitemap,
+    'products_image': ProductsImageSitemap,
+    'customer': CustomerSitemap,
+    'cart': CartSitemap,
+    'wishlist': WishlistSitemap,
+    'payment': PaymentSitemap,
+    'order_placed': OrderPlacedSitemap,
+    'order_placed_cod': OrderPlacedCODSitemap,
+    'contact_message': ContactMessageSitemap,
 }
-
 
 urlpatterns = [
     path('', views.home, name='index'),
@@ -76,7 +85,10 @@ urlpatterns = [
     
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     
+    
+    
 ]
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     

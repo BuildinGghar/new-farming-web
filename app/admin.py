@@ -162,3 +162,5 @@ class ContactMessageAdmin(admin.ModelAdmin):
 
 admin.site.register(ContactMessage, ContactMessageAdmin)
 
+
+
