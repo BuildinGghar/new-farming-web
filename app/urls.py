@@ -9,6 +9,15 @@ from django.contrib.auth import views as auth_views
 from app.forms import MyPasswordResetForm, MySetPasswordForm
 from django.contrib import admin
 from .views import *
+
+from django.contrib.sitemaps.views import sitemap
+from .sitemaps import MySitemap
+
+sitemaps = {
+    'my_sitemap': MySitemap,
+}
+
+
 urlpatterns = [
     path('', views.home, name='index'),
     path('all_product', views.all_product, name='all_product'),
@@ -63,16 +72,17 @@ urlpatterns = [
     path('faq/', views.faq, name='faq'),
     path('terms_condition/', views.terms_condition, name='terms_condition'),
     path('privacy/', views.privacy, name='privacy'),
+    path('support_policy/', views.support_policy, name='support_policy'),
     
-    
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     
 
-admin.site.site_header= "Farming"
-admin.site.site_title= "Farming"
-admin.site.site_index_title= "Welcome to Farming Admin Site"
+admin.site.site_header= "Farmscraft"
+admin.site.site_title= "Farmscraft"
+admin.site.site_index_title= "Welcome to Farmscraft Admin Site"
 
 

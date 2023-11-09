@@ -21,6 +21,29 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{% block meta_description %} {% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %} {% endblock %}">
+    <meta name="author" content="{% block meta_author %} {% endblock %}">
+
+    <!-- Open Graph meta tags for social media sharing -->
+    <meta property="og:title" content="{% block og_title %}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{% endblock %}">
+    <meta property="og:url" content="{% block og_url %}{% endblock %}">
+
+    
+
+    <!-- Canonical link to avoid duplicate content issues -->
+    <link rel="canonical" href="{% block canonical_url %}{% endblock %}">
+
+    <!-- Robots meta tag for search engine crawling -->
+    <meta name="robots" content="{% block robots_meta %}{% endblock %}">
+
+
+
+
     
 </head>
 <body>
@@ -255,10 +278,10 @@ h1, h2, h3, h4, h5, h6 {
                 <div class="col-lg-3 col-md-6">
                     <div class="f_widget company_widget wow fadeInLeft" data-wow-delay="0.2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInLeft;">
                         <h3 class="f-title f_600 t_color f_size_18">Get in Touch</h3>
-                        <p>Call to Order +91 8035564342</p>
-                        <p>+91 9343899923</p>
+                        <p>Order helpline +91 8035564342</p>
+                        <p>Support helpline +91 9343899923</p>
                         <p>contact@farmscraft.com</p>
-                        <p># 456, 4th Floor, 7th Cross, BTM Layout Stage 2. Bengaluru - 560076 Landmark Opposite Marigold Hospital</p>
+                        <p># 456, Ground Floor, 7th Cross, BTM Layout Stage 2. Bengaluru - 560076 Landmark Opposite Marigold Hospital</p>
                         {% comment %} <form action="#" class="f_subscribe_two mailchimp" method="post" novalidate="true" _lpchecked="1">
                             <input type="text" name="EMAIL" class="form-control memail" placeholder="Email">
                             <button class="btn btn_get btn_get_two" type="submit">Subscribe</button>
@@ -288,7 +311,7 @@ h1, h2, h3, h4, h5, h6 {
                             <li><a href="/terms_condition" style="text-decoration: none;">Term &amp; conditions</a></li>
                             {% comment %} <li><a href="#">Reporting</a></li>
                             <li><a href="#">Documentation</a></li> {% endcomment %}
-                            <li><a href="#" style="text-decoration: none;">Support Policy</a></li>
+                            <li><a href="/support_policy" style="text-decoration: none;">Support Policy</a></li>
                             <li><a href="/privacy" style="text-decoration: none;">Privacy</a></li>
                         </ul>
                     </div>

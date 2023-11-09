@@ -171,3 +171,19 @@ class ContactMessage(models.Model):
     
     
     
+    
+    
+
+
+
+    
+    
+from haystack import indexes
+
+class YourModelIndex(indexes.SearchIndex, indexes.Indexable):
+    text = indexes.CharField(document=True, use_template=True)
+
+    def get_model(self):
+        from app.models import YourModel  # Import inside the method
+        return YourModel
+

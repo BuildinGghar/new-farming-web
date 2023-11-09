@@ -815,3 +815,19 @@ def privacy(request):
 
 
 
+@login_required
+def support_policy(request):
+    totalitem=0
+    if request.user.is_authenticated:
+        totalitem=len(Cart.objects.filter(user=request.user))
+    wishitem=0
+    if request.user.is_authenticated:
+        wishitem=len(Wishlist.objects.filter(user=request.user))
+    addresses = Customer.objects.filter(user=request.user)
+    context={
+        'addresses': addresses,
+        'totalitem':totalitem,
+        'wishitem':wishitem
+    }
+    return render(request, 'app/support_policy.html', context)
+

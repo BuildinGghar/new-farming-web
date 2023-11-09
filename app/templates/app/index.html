@@ -1,6 +1,27 @@
 {% extends 'app/base.html' %} 
 {% load static %}
 {% block title %}Index{% endblock title %}
+
+{% block meta_description %}This is a page-specific meta description.{% endblock %}
+{% block meta_keywords %}specific, keywords, here{% endblock %}
+{% block meta_author %}Page Author{% endblock %}
+
+{% block og_title %}Page-Specific Title{% endblock %}
+{% block og_description %}This is a page-specific Open Graph description.{% endblock %}
+{% block og_image %}URL to page-specific image{% endblock %}
+{% block og_url %}{% url 'index' %}{% endblock %}
+
+{% block twitter_title %}Page-Specific Title{% endblock %}
+{% block twitter_description %}This is a page-specific Twitter description.{% endblock %}
+{% block twitter_image %}URL to page-specific Twitter image{% endblock %}
+
+{% block canonical_url %}{% url 'index' %}{% endblock %}
+
+{% block robots_meta %}index, follow{% endblock %}
+
+
+
+
 {% block bannner_slider %}
 <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
    <style>
