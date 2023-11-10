@@ -17,6 +17,7 @@ class ProductsImageInline(admin.TabularInline):
     fields = ('image',)  # Include the image field
 
 class ProductAdmin(admin.ModelAdmin):
+    list_display = ('id','name', 'city', 'product_availability', 'price', 'after_discount', 'weight')
     list_filter = ('city', 'product_availability')
     search_fields = ('name', 'long_dec')
     inlines = [ProductsImageInline]
